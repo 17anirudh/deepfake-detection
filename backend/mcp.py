@@ -1,18 +1,19 @@
 from typing import List, Dict
-import chromadb as Chroma
-from langchain_ollama import OllamaLLM, OllamaEmbeddings
+import chromadb
+from chromadb.utils import embedding_functions
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from duckduckgo_search import DDGS
+from ddgs import DDGS
+from langchain_ollama import OllamaLLM, OllamaEmbeddings
 import os
 import re
 from structures import InformationResponse
 
 # === CONFIG ONLY ===
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5vl:7b")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:0.6b")
 EMBEDDINGS = os.getenv("EMBEDDINGS", "nomic-embed-text:latest")
 MAX_WEB_RESULTS = int(os.getenv("MAX_WEB_RESULTS", "10"))
-CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", "./chroma_db")
+CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", "./database")
 
 TRUSTED_FACTS = [
     "Private credit markets have seen high-profile collapses like First Brands and Tricolor in 2025.",
@@ -22,29 +23,38 @@ TRUSTED_FACTS = [
 
 embeddings = None
 vectorstore = None
+collection = None
 llm = None
 prompt = None
 chain = None
 
 def init_mcp_resources(device: str = "cpu"):
     """Initialize all MCP resources. Call ONCE during startup."""
-    global embeddings, vectorstore, llm, prompt, chain
+    global embeddings, vectorstore, collection, llm, prompt, chain
 
     embeddings = OllamaEmbeddings(model=EMBEDDINGS)
-    vectorstore = Chroma(
-        collection_name="trusted_facts",
-        embedding_function=embeddings,
-        persist_directory=CHROMA_PERSIST_DIR
+    chroma_client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+    
+    # Create or get collection with embedding function
+    collection = chroma_client.get_or_create_collection(
+        name="trusted_facts",
+        metadata={"hnsw:space": "cosine"}
     )
 
     # Seed facts if empty
-    if vectorstore._collection.count() == 0:
-        vectorstore.add_texts(
-            texts=TRUSTED_FACTS,
+    if collection.count() == 0:
+        # Generate embeddings for trusted facts
+        fact_embeddings = [embeddings.embed_query(fact) for fact in TRUSTED_FACTS]
+        
+        collection.add(
+            documents=TRUSTED_FACTS,
+            embeddings=fact_embeddings,
             ids=[f"fact_{i}" for i in range(len(TRUSTED_FACTS))],
             metadatas=[{"source": "verified", "type": "baseline"} for _ in TRUSTED_FACTS]
         )
         print("✓ Seeded trusted facts into Chroma")
+
+    vectorstore = collection  # Keep reference for compatibility
 
     llm = OllamaLLM(model=OLLAMA_MODEL, temperature=0.0)
 
@@ -150,8 +160,15 @@ def rag_classify(claim: str) -> InformationResponse:
     else:
         web_context = "No recent web articles found."
     
-    static_docs = vectorstore.similarity_search(claim, k=2)
-    static_context = "\n".join([d.page_content for d in static_docs])
+    # Query ChromaDB directly with embeddings
+    claim_embedding = embeddings.embed_query(claim)
+    results = collection.query(
+        query_embeddings=[claim_embedding],
+        n_results=2
+    )
+    
+    # Extract documents from results
+    static_context = "\n".join(results['documents'][0]) if results['documents'] else ""
     
     try:
         raw_output = chain.invoke({

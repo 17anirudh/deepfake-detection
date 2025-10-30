@@ -13,7 +13,7 @@ from mcp import guess_news, init_mcp_resources, vectorstore
 from structures import Auditing, InformationRequest, InformationResponse
 
 #  Configuration
-DB_URL          = "sqlite:///audit.db"
+DB_URL          = "sqlite:///database/audit.db"
 UPLOAD_DIR      = Path("private")
 UPLOAD_DIR.mkdir(exist_ok=True)
 

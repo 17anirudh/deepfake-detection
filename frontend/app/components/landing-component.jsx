@@ -6,10 +6,7 @@ import { Rat } from "lucide-react";
 export default function Globe3D() {
   return (
     <section
-      className="relative w-full overflow-hidden bg-[#0a0613] pt-32 pb-10 font-light text-white antialiased md:pt-20 md:pb-16"
-      style={{
-        background: "linear-gradient(135deg, #0a0613 0%, #150d27 100%)",
-      }}>
+      className="relative w-full overflow-hidden bg-[#0a0613] pt-32 pb-10 font-light text-white antialiased md:pt-20 md:pb-16">
       <div
         className="absolute top-0 right-0 h-1/2 w-1/2"
         style={{

@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { newsSchema } from "../api/submit"  // ✅ correct place?
+import { newsSchema } from "../api/submit"  
+import { Textarea } from "@/components/ui/textarea"
 import {
   Card,
   CardContent,
@@ -56,7 +57,7 @@ export default function NewsForm() {
               <FormItem>
                 <FormLabel>News</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Textarea placeholder="Meta Superintelligence Labs hires Alexandr Wang" {...field} />
                 </FormControl>
                 <FormDescription>
                   This News will be predicted.

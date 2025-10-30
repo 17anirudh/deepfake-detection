@@ -11,7 +11,6 @@ import {
   SidebarMenuItem,
   SidebarTrigger
 } from "@/components/ui/sidebar";
-import { ModeToggle } from "./theme-toggle";
 
 
 const items = [
@@ -45,8 +44,8 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
-        <SidebarGroup>
+      <SidebarContent className="bg-black text-amber-50">
+        <SidebarGroup className="bg-black text-amber-50">
           <SidebarGroupLabel>Moongoose   <Rat /> </SidebarGroupLabel>
           <SidebarTrigger />
           <SidebarGroupContent>
@@ -61,11 +60,6 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <SidebarMenuItem key="mode">
-                  <SidebarMenuButton asChild>
-                    <ModeToggle />
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

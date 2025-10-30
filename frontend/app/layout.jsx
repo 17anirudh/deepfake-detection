@@ -1,4 +1,3 @@
-import { ThemeProvider } from "./components/theme-provider";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "sonner";
@@ -22,24 +21,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body className={`
         ${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-        <SidebarProvider defaultOpen={false}>
+        <SidebarProvider defaultOpen={false} className="bg-black text-amber-50">
           <AppSidebar />
           <main>
             {children}
             <Toaster richColors closeButton/>
           </main>
         </SidebarProvider>
-        </ThemeProvider>
       </body>
     </html>
   );
