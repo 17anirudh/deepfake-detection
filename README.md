@@ -6,7 +6,7 @@ Mongoose is an advanced web application designed to combat the spread of misinfo
 - Landing page
 ![Landing](/landing.png)
 - Slow 4G performance
-![performance](/slow 4G performance.png)
+![performance](/4G_performance.png)
 
 ## Key Features
 - Multi-Modal Detection: Upload and analyze three different types of media using distinct AI models:
