@@ -34,7 +34,7 @@ export default function Globe3D() {
             Stay safe with{" "}
             <span className="text-[#9b87f5]">AI</span> Insights
           </h2>
-          <p className="mx-auto mb-10 max-w-2xl text-lg text-white/60 md:text-xl">
+          <p className="mx-auto mb-10 max-w-prose text-base text-white/70 sm:text-lg md:text-xl leading-relaxed">
             Deepfake detecter combines usage of artificail intelligence with 
             the use of deep learning and retrieval augementative generation
             with best practices to help you identify between what is real and 

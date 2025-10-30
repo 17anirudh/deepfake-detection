@@ -100,14 +100,15 @@ def fetch_news_multi_source(query: str) -> List[Dict]:
     
     # General news sources for diverse topics
     sources = [
+        "site:deccanherald.com OR site:news.google.com OR site:thehindu.com"
+        "site:timesofindia.indiatimes.com OR site:hindustantimes.com OR site:indianexpress.com",
         "site:reuters.com OR site:bbc.com OR site:apnews.com OR site:theguardian.com",
         "site:cnn.com OR site:nbcnews.com OR site:abcnews.go.com OR site:cbsnews.com",
-        "site:timesofindia.indiatimes.com OR site:hindustantimes.com OR site:indianexpress.com",
+        
     ]
     
     try:
         with DDGS() as ddgs:
-            # First try: with site restrictions
             for source_group in sources:
                 try:
                     search_results = ddgs.text(

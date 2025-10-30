@@ -9,7 +9,7 @@ from sqlmodel import Session, SQLModel, create_engine
 from ultralytics import YOLO
 
 from pytorch import load_models, guess_image, guess_video
-from mcp import guess_news, init_mcp_resources, vectorstore
+from rag import guess_news, init_mcp_resources, vectorstore
 from structures import Auditing, InformationRequest, InformationResponse
 
 #  Configuration
